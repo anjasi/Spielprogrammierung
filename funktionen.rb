@@ -1,1 +1,4 @@
-# Hier werden alle Funktionen für Snake gesammelt!
+﻿# Hier werden alle Funktionen für Snake gesammelt!
+
+# Lokale Änderung von Alexander
+# Erneute Änderung
