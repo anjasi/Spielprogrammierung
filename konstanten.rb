@@ -1,1 +1,8 @@
-# Hier werden alle Konstanten gesammelt.
+# Hier werden alle Konstanten in Pixel gesammelt.
+
+SPIELFELD_GROESSE = 500
+ZELLEN_GROESSE = 10
+OFFSET = 50
+#X_START_SCHLANGE =
+#Y_START_SCHLANGE = 
+#GESCHWINDIGKEIT = 5
