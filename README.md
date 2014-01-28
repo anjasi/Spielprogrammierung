@@ -9,10 +9,10 @@ ________
 Das Team
 --------
 
-Alexander Gantikow
-Sandra Hildebrand
-Regina Puls 
-Anja Sinz 
+* Alexander Gantikow
+* Sandra Hildebrand
+* Regina Puls 
+* Anja Sinz 
 
 
 
