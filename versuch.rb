@@ -37,9 +37,9 @@ class Feld <Shoes::Widget
 		stroke black
 		fill white 
 		@feld = rect(@x_position, @y_position, @hoehe, @breite)
-		
-	end 
-end 
+	
+	end # Ende Initialize
+end # Ende Klasse
 
 class Schlange <Shoes::Widget
 	@x,@y = 0,0	
@@ -55,73 +55,47 @@ class Schlange <Shoes::Widget
 		@farbe = blue
 	
 		fill @farbe
-		@schlange = rect(@x, @y, @a, @a)	
+		@schlange = rect(@x, @y, @a, @a)
+
+		# Aus Schlange.rb
+		@@spielfeld=Array.new(50) {Array.new(50, 0)} 	# Lege ein 2D-Array an mit 10x10 und fülle es mit Nullen (Default-Wert)
+		@@schlange = Array.new(4) {Array.new(4)}		# Erweitert sich automatisch
+		@@verlaengerung = 5
+		
+		50.times do |i|				#Fülle Wände mit Vieren aus
+			@@spielfeld[i][0]=4		# Y-Wert bleibt gleich, fülle entlang der X-Achse, oben
+			@@spielfeld[i][49]=4		# Y-Wert bleibt gleich, fülle entlang der X-Achse, unten
+			@@spielfeld[0][i]=4		# X-Wert bleibt gleich, fülle entlang der Y-Achse, links
+			@@spielfeld[49][i]=4		# X-Wert bleibt gleich, fülle entlang der Y-Achse, rechts
+		end
+		
+			@@spielfeld[25][25]=1;	# ANFANG: Start-Schlange setzen
+			@@spielfeld[26][25]=1;
+			@@spielfeld[27][25]=1;
+			@@spielfeld[28][25]=1;	
+	
+
+			@@schlange[0][0]=28;       	# [Körperteil] [Unterscheidung Koordinate] = X-Koordinate
+			@@schlange[0][1]=25;       	# [Körperteil] [Unterscheidung Koordinate] = Y-Koordinate
+			@@schlange[1][0]=27;		# Rückwärts gezählt, da Schlangen-Kopf größerer X-Wert als Körper
+			@@schlange[1][1]=25;
+			@@schlange[2][0]=26;
+			@@schlange[2][1]=25;
+			@@schlange[3][0]=25;
+			@@schlange[3][1]=25;		
+			debug("Spielfeld und Schlange wurden erzeugt")
 	end
 	
-# ------ Richtungsmethoden -> bewegen das Quadrat ----
-
-	def nach_oben			
-		
-		@x = @x
-		@y = @y - @a
-			# Fall, dass es zu weit nach oben aus dem Fenster raus will  
-			if @y < RAND then 		
-				alert "Da geht es nicht weiter! Du bist gegen den Rand gefahren!" 
-				@x = X_START
-				@y = Y_START
-			end 
-
-		@schlange.move(@x, @y)
-	end
-
-	def nach_unten
-		
-		@x = @x
-		@y = @y + @a
-	
-			#Fall, dass es zu weit nach unten will
-			if @y > FENSTER - ZELLE - RAND then 
-				@x = X_START
-				@y = Y_START
-				alert "Da geht es nicht weiter! Du bist gegen den Rand gefahren!" 
-			end 
-
-		@schlange.move(@x, @y)		
-	end
-
-	def nach_rechts
-		
-		@x = @x + @a
-		@y = @y 
-			
-			#Fall, dass es zu weit nach rechts will 
-			if @x > FENSTER - ZELLE - RAND then 
-				@x = X_START
-				@y = Y_START
-				alert "Da geht es nicht weiter! Du bist gegen den Rand gefahren!"			
-			end 
-
-		@schlange.move @x, @y			
-	end
-
-	def nach_links
-		
-		@x = @x - @a
-		@y = @y
-			
-			#Fall, dass es zu weit nach links will
-			if @x < RAND  then 
-				@x = X_START
-				@y = Y_START
-				alert "Da geht es nicht weiter! Du bist gegen den Rand gefahren!" 
-			end 
-
-		@schlange.move @x, @y		
-	end
-	
+# ------------------------ Methoden ----------------	
 	def richtung(richtung)
 		@richtung = richtung
-		case richtung
+	end
+	
+	def verschiebe_schlange()
+		# Verschiebt NUR im Schlangen Array
+		# RUFT auf: zeichne Schlange
+=begin
+		case @richtung
 			when :up 
 				@x = @x  
 				@y = @y - 10  
@@ -137,55 +111,84 @@ class Schlange <Shoes::Widget
 			when :right
 				@x = @x + 10
 				@y = @y 
-			end 
-		
+		end
+=end
+		case @richtung
+			when :up 
+				x = 0
+				y = 1  
+				
+			when :down 
+				x = 0 
+				y = 1
+				
+			when :left
+				x = -1 
+				y = 0 
+				
+			when :right
+				x = 1
+				y = 0 
 		end 
-	
-	def bewegen()
-		@x, @y = schlange.richtung(@richtung)
-		@schlange = rect(@x, @y, @a, @a) 
+		
+		 if @@verlaengerung==0 then			
+			#gotoxy(/*X-Koordinate*/ schlange[anzahlFelder-1][0]+1, /*Beginn y-koordinate*/ schlange[anzahlFelder-1][1]+1); // Letztes Feld löschen
+			#cout<<(char)32; // Oder Leerzeichen: cout<<" ";
+			#spielfeld[schlange[anzahlFelder-1][0]][schlange[anzahlFelder-1][1]]=0; // Letztes Feld im Spielfeld=0
+		end
+		
+		(@@schlange.length-1).times do |i|			# Das Array bewegt sich mit
+			@@schlange[i+1][0]=@@schlange[i][0]	# Solannge wie die Schlange lang ist, Schleife fängt oben an und endet bei 0
+			@@schlange[i+1][1]=@@schlange[i][1]			
+		end
+		
+		#for i in 0..5 :TODO
+		#	puts "Value of local variable is #{i}"
+		#end
+		 
+		# for(int i=anzahlFelder-1;i>=0;i--) {		// Solannge wie die Schlange lang ist, Schleife fängt oben an und endet bei 0
+                #schlange[i+1][0]=schlange[i][0];		// Werden hier der Kopf und Körper verschoben?
+                #schlange[i+1][1]=schlange[i][1];
+		#}
+			
+		@@schlange[0][0] = @@schlange[0][0]+1	
+		zeichne_schlange()
 	end
 	
-		
-	
-	
-	
+	def zeichne_schlange
+		#@schlange = rect(@x,@y,@a,@a)
+		laenge=@@schlange.length
+		laenge.times do |i|
+			if i==0 then 
+				fill green
+			else
+				fill red
+			end
+			@schlange = rect(@@schlange[i][0]*10,@@schlange[i][1]*10,@a,@a)			
+		end	
+	end
 end  # Klassenende
 	
 
 
 # Shoes Programm 
-
 Shoes.app :height => FENSTER, :width => FENSTER do 
 Shoes.show_log
-
-# Anlegen des Feldes 
-	spielfeld = feld()
-
-# Anlegen des Quadrats
-	schlange = schlange()
-
-# keypress Event
-	keypress do |key|
-		case key 
-			when :up, :down, :left, :right
-			schlange.richtung(key)
-		end 
-		end
+# ----- Objekterzeugung ------------------------------
+	spielfeld = feld()			# Anlegen des Feldes 
+	schlange = schlange()		# Anlegen des Quadrats
+	
+	
+	keypress do |key|		# keypress Event
+		schlange.richtung(key)	# Speichert nur das Keyword für die Richtung		
+	end
 			
-	animate(5) do 
-		
+	animate(10) do 
+		schlange.verschiebe_schlange() # Zeichnet die Schlange nicht, verschiebt im array und grafisch
+		#snakeobj.setzeFressen(); 	TODO
+		#snakeobj.setzeBonus();	TODO
+                #snakeobj.anzeige();		TODO
 	end 
 
 
-	#animate(SPEED) do |a| 
-	#	case a 
-	#		when :left then
-				
-	#	schlange.move	@x, @y	#.move ist eine Methode aus der Bibliothek!!!!!
-	#@status.replace "Your Score: #{@snake.score} | High Score: #{@snake.high_score}" 
-	#	elsif @new_game
-	#		@status.replace "Game over!"
-	#	end
-	#end
-end 
+end # App-Ende
