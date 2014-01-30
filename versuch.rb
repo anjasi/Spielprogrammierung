@@ -21,7 +21,7 @@
 	SPEED = 5
 #-------------------------------------------------------------
 # Klassen 
-
+=begin
 class Feld <Shoes::Widget
 	@x_position, @y_position, @hoehe, @breite = 0, 0, 0
 	@farbe = NIL 
@@ -40,7 +40,7 @@ class Feld <Shoes::Widget
 	
 	end # Ende Initialize
 end # Ende Klasse
-
+=end
 class Schlange <Shoes::Widget
 	@x,@y = 0,0	
 	@a = 0
@@ -56,11 +56,15 @@ class Schlange <Shoes::Widget
 	
 		fill @farbe
 		@schlange = rect(@x, @y, @a, @a)
+		@test = para
 
 		# Aus Schlange.rb
 		@@spielfeld=Array.new(50) {Array.new(50, 0)} 	# Lege ein 2D-Array an mit 10x10 und fülle es mit Nullen (Default-Wert)
 		@@schlange = Array.new(4) {Array.new(4)}		# Erweitert sich automatisch
-		@@verlaengerung = 5
+		@@verlaengerung = 2	
+		@anzahl_felder = 4 			# Anzahl der Körperteile von Snake
+		@xmove=0
+		@ymove=0
 		
 		50.times do |i|				#Fülle Wände mit Vieren aus
 			@@spielfeld[i][0]=4		# Y-Wert bleibt gleich, fülle entlang der X-Achse, oben
@@ -75,15 +79,16 @@ class Schlange <Shoes::Widget
 			@@spielfeld[28][25]=1;	
 	
 
-			@@schlange[0][0]=28;       	# [Körperteil] [Unterscheidung Koordinate] = X-Koordinate
-			@@schlange[0][1]=25;       	# [Körperteil] [Unterscheidung Koordinate] = Y-Koordinate
+			@@schlange[0][0]=28;       	# X-Koordinate [Körperteil] [Unterscheidung Koordinate] 
+			@@schlange[0][1]=25;       	# Y-Koordinate [Körperteil] [Unterscheidung Koordinate] 
 			@@schlange[1][0]=27;		# Rückwärts gezählt, da Schlangen-Kopf größerer X-Wert als Körper
 			@@schlange[1][1]=25;
 			@@schlange[2][0]=26;
 			@@schlange[2][1]=25;
-			@@schlange[3][0]=25;
-			@@schlange[3][1]=25;		
+			@@schlange[3][0]=25;		# X - Letztes Feld der Schlange
+			@@schlange[3][1]=25;		# Y - Letztes Feld der Schlange			
 			debug("Spielfeld und Schlange wurden erzeugt")
+			zeichne_schlange()
 	end
 	
 # ------------------------ Methoden ----------------	
@@ -94,71 +99,89 @@ class Schlange <Shoes::Widget
 	def verschiebe_schlange()
 		# Verschiebt NUR im Schlangen Array
 		# RUFT auf: zeichne Schlange
-=begin
 		case @richtung
 			when :up 
-				@x = @x  
-				@y = @y - 10  
+				@xmove = 0
+				@ymove = -1  
 				
 			when :down 
-				@x = @x 
-				@y = @y + 10
+				@xmove = 0 
+				@ymove = +1
 				
 			when :left
-				@x = @x - 10 
-				@y = @y 
+				@xmove = -1 
+				@ymove = 0 
 				
 			when :right
-				@x = @x + 10
-				@y = @y 
-		end
-=end
-		case @richtung
-			when :up 
-				x = 0
-				y = 1  
-				
-			when :down 
-				x = 0 
-				y = 1
-				
-			when :left
-				x = -1 
-				y = 0 
-				
-			when :right
-				x = 1
-				y = 0 
+				@xmove = 1
+				@ymove = 0 
 		end 
-		
-		 if @@verlaengerung==0 then			
-			#gotoxy(/*X-Koordinate*/ schlange[anzahlFelder-1][0]+1, /*Beginn y-koordinate*/ schlange[anzahlFelder-1][1]+1); // Letztes Feld löschen
-			#cout<<(char)32; // Oder Leerzeichen: cout<<" ";
-			#spielfeld[schlange[anzahlFelder-1][0]][schlange[anzahlFelder-1][1]]=0; // Letztes Feld im Spielfeld=0
-		end
-		
-		(@@schlange.length-1).times do |i|			# Das Array bewegt sich mit
-			@@schlange[i+1][0]=@@schlange[i][0]	# Solannge wie die Schlange lang ist, Schleife fängt oben an und endet bei 0
-			@@schlange[i+1][1]=@@schlange[i][1]			
-		end
-		
-		#for i in 0..5 :TODO
-		#	puts "Value of local variable is #{i}"
+
+
+		#----------- LÖSCHE LETZTE STELLE --------------		
+		#  if @@verlaengerung==0 then
+			
+
+			#nostroke
+			fill black
+			#laenge = @@schlange.length-1
+			#@schlange = rect((@@schlange[-1][0])*10,(@@schlange[-1][1])*10,@a,@a)
+			
+			@schlange = rect((@@schlange[-1][0])*10,(@@schlange[-1][1])*9,@a,@a)	# TODO, funzt halbwegs
+			@test.replace @@schlange[0][0]
+			
+			# Letztes Feld der Schlange --> Spielfeld = 0
+			@@spielfeld[@@schlange[-1][0]][@@schlange[-1][1]]=0
+			# Das funktioniert			
+			# Setzte letztes Feld der Schlange im Spielfeld=0, damit es wieder frei wird
+			# Syntax: spielfeld [] [] , X- und Y- Koordinaten der Schlagen eintragen			
+			#@test.replace "#{@@schlange[-1][0]}" # Code zum checken
+		#else
+			#@anzahl_felder = @anzahl_felder+1
+			#@@verlaengerung = @@verlaengerung-1	
 		#end
-		 
+		
+
+		
+		#----------- DAS ARRAY MITBWEGEN --------------		
+		(@@schlange.length-1).times do |i|				# Das Array bewegt sich mit
+			@@schlange[i+1][0]=@@schlange[i][0]		# Solannge wie die Schlange lang ist, Schleife fängt oben an und endet bei 0
+			@@schlange[i+1][1]=@@schlange[i][1]	
+			#@test.replace @@schlange[i]
+			#@test.replace @@schlange[3][0]
+		end
+	
+		#----------- VERWENDUNG DES TASTENDRRUCKS --------------
+		# Oben haben wir den Tastendruck in Nullen und Einser umgewandelt und in den Variablen @xmove und @ymove gespeichert.
+		# Hier kommen die beiden zum Einsatz
+		
+		@@schlange[0][0]=@@schlange[1][0]+@xmove	# X - Koordinate
+		@@schlange[0][1]=@@schlange[1][1]+@ymove	# Y - Koordinate
+	
+=begin		
+		counter = @@schlange.length-2	
+		while counter >= 0 do			
+			@@schlange[counter+1][0] = @@schlange[counter][0]	# Schreibe die vorhergehende Koordinate an das Körperteil das in der Schlange als nächstes kommt
+			@@schlange[counter+1][1] = @@schlange[counter][1]	
+			#para counter
+			counter = counter-1
+		end
+
+=end		 
 		# for(int i=anzahlFelder-1;i>=0;i--) {		// Solannge wie die Schlange lang ist, Schleife fängt oben an und endet bei 0
                 #schlange[i+1][0]=schlange[i][0];		// Werden hier der Kopf und Körper verschoben?
                 #schlange[i+1][1]=schlange[i][1];
 		#}
 			
-		@@schlange[0][0] = @@schlange[0][0]+1	
+		#@@schlange[0][0] = @@schlange[0][0]+1	
 		zeichne_schlange()
 	end
 	
-	def zeichne_schlange
-		#@schlange = rect(@x,@y,@a,@a)
-		laenge=@@schlange.length
-		laenge.times do |i|
+#------------------------------Die Schlange wird gezeichnet -------
+# ----	Zeichnet Schlange Stück für Stück mit Hilfe des Arrays schlange	
+	def zeichne_schlange		
+		@@schlange.length.times do |i|
+		#@anzahl_felder.times do |i|
 			if i==0 then 
 				fill green
 			else
@@ -175,7 +198,7 @@ end  # Klassenende
 Shoes.app :height => FENSTER, :width => FENSTER do 
 Shoes.show_log
 # ----- Objekterzeugung ------------------------------
-	spielfeld = feld()			# Anlegen des Feldes 
+	#spielfeld = feld()			# Anlegen des Feldes   UNNÖTIG?
 	schlange = schlange()		# Anlegen des Quadrats
 	
 	
@@ -183,8 +206,9 @@ Shoes.show_log
 		schlange.richtung(key)	# Speichert nur das Keyword für die Richtung		
 	end
 			
-	animate(10) do 
-		schlange.verschiebe_schlange() # Zeichnet die Schlange nicht, verschiebt im array und grafisch
+	animate(1) do 
+		#schlange.zeichne_schlange() # Checkfunktion - funktioniert!
+		schlange.verschiebe_schlange() # Zeichnet die Schlange nicht, sondern verschiebt im array und grafisch
 		#snakeobj.setzeFressen(); 	TODO
 		#snakeobj.setzeBonus();	TODO
                 #snakeobj.anzeige();		TODO

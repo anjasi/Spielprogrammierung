@@ -1,13 +1,13 @@
 # Diese Datei wurde fuer die Schlangenfunktion angelegt
 require 'konstanten'
 
-class Schlange 
+class Schlange < Shoes::Widget
 
 	@@spielfeld=Array.new(50) {Array.new(50, 0)} 	# Lege ein 2D-Array an mit 10x10 und fülle es mit Nullen (Default-Wert)
 	@@schlange = Array.new(4) {Array.new(4)}		# Erweitert sich automatisch
 	
 
-	def initialize					# Konstruktor 		
+	def initialize(x)					# Konstruktor 		
 		50.times do |i|				#Fülle Wände mit Vieren aus
 			@@spielfeld[i][0]=4		# Y-Wert bleibt gleich, fülle entlang der X-Achse, oben
 			@@spielfeld[i][49]=4		# Y-Wert bleibt gleich, fülle entlang der X-Achse, unten
@@ -29,7 +29,6 @@ class Schlange
 			@@schlange[2][1]=25;
 			@@schlange[3][0]=25;
 			@@schlange[3][1]=25;		
-			debug("Spielfeld und Schlange wurden erzeugt")
 
 	end # Ende initialize		
  end # Ende Klasse
