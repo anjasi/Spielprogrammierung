@@ -15,7 +15,7 @@ Shoes.show_log
 		@b1 = button "Spiel Starten" do					
 			#clear()						# Neuer Bildschirm
 			#print_spielfeld()					# Zeige Spielfeld
-			#snakeobj = Schlange.new				# Das Array wird erfolgreich erzeugt
+			snakeobj = Schlange.new(5)				# Das Array wird erfolgreich erzeugt
 			#@object = rect(OFFSET, OFFSET, 10, 10)	# Einfach mal das Rect reingesetzt
 			# ------------------------------ Keypress funktioniert mit den Buttons nicht :( ------------------------------			
 			keypress do |k| 
