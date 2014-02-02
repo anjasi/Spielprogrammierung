@@ -1,4 +1,4 @@
-Spielprogrammierung
+Das ist eine Änderung von Anja :)Spielprogrammierung
 ===================
 
 Im Rahmen unseres Seminars "Programmierung in einer objektorientierten Programmiersprache" wurde uns die Aufgabe gestellt in kleinen Gruppen ein Spiel mit Ruby und Shoes zu programmieren. 
