@@ -1,8 +1,8 @@
-Das ist ein Test von Anja  :) Spielprogrammierung
+Spielprogrammierung
 ===================
 
 Im Rahmen unseres Seminars "Programmierung in einer objektorientierten Programmiersprache" wurde uns die Aufgabe gestellt in kleinen Gruppen ein Spiel mit Ruby und Shoes zu programmieren. 
-Unsere Gruppe hat entschieden, sich an dem Spieleklassiker Snake zu versuchen. 
+Unsere Gruppe hat entschieden, sich an dem Spielehttps://github.com/anjasi/Spielprogrammierungklassiker Snake zu versuchen. 
 
 ________
 
