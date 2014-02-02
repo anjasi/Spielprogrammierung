@@ -27,8 +27,11 @@ Shoes.show_log
 				end 
 			end					
 		end
-		@b2 = button "Anleitung"do		# TODO Anleitung schreiben		
+		@b2 = button "Anleitung"do				
 			@hauptauswahl = 2
+				stack do
+					alert "Ziel des Spiels ist es, mit deiner Schlange moeglichst viel Futter einzusammeln. Dies gelingt dir, indem du die Schlange mit den Pfeiltasten nach oben, nach unten, nach links oder  nach rechts steuerst. Doch aufgepasst! Mit jedem eingesammelten Futterstueck waechst deine Schlange. Faehrst du in dich selbst oder gegen den Rand hast du leider verloren und das Spiel ist beendet!"
+				end
 		end
 		@b3 = button "Highscore"do		# TODO: Auslesen und Schreiben in TXT
 			@hauptauswahl = 3				
