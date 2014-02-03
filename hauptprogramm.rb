@@ -1,4 +1,4 @@
-# Hier entsteht das Hauptprogramm# Das ist ein Test von Anja
+# Hier entsteht das Hauptprogramm
 
 # ------------------------------ Includes ------------------------------
 require 'schlange'
