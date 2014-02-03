@@ -1,4 +1,5 @@
 # Hier entsteht das Hauptprogramm
+# Test von Anja
 
 # ------------------------------ Includes ------------------------------
 require 'schlange'
@@ -94,7 +95,7 @@ end
 		end # --- Ende Hauptmenue = 3
 		
 	end while (a==0)
-	exit # TODO Unnötig?
+	exit # TODO Unnï¿½tig?
 =end
 
 
