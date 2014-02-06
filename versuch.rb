@@ -111,10 +111,7 @@ class Schlange <Shoes::Widget
 
 
 		#------------ LÖSCHE LETZTE STELLE ----------------------------------------------------------------------
-		if @@verlaengerung==0 then				# Wenn Verlängerung der Schlange null ist										
-			nostroke							# kein Rand
-			fill white 							# fülle weiß			
-			#@schlange = rect(@@schlange[-1][0]*10+RAND,@@schlange[-1][1]*10+RAND,ZELLE,ZELLE)	# Lösche grafisch
+		if @@verlaengerung==0 then				# Wenn Verlängerung der Schlange null ist
 
 			@@spielfeld[@@schlange[-1][0]][@@schlange[-1][1]]=0	
 			# Löscht letztes Feld im Array		
@@ -150,17 +147,13 @@ class Schlange <Shoes::Widget
 			@@spielfeld[@@schlange[0][0]][@@schlange[0][1]]=1	# Schlange wird ins Spielfeld gesetzt
 		end		
 		if checkErg==1 then								# Wenn Kopf auf die Schlange trifft, dann ...
-			@@spielvariable=2							# Setze Spielvariable, damit Ende
+			@@spielvariable=2							# Beendet das Spiel
 			alert "Ups, du bist gegen dich selbst gefahren"	# Hinweismeldung
 		end		
 		if checkErg==4 then								# Wenn Kopf auf die Wand trifft, dann ...
-			@@spielvariable=2							# Setze Spielvariable, damit Ende
+			@@spielvariable=2							# Beendet das Spiel
 			alert "Hoppla, das war die Wand!"				# Hinweismeldung
-		end      
-		
-		#----------- ZEICHNE SCHLANGE --------------------------------------------------------------------------
-		#zeichne_schlange()								# Zeichne die Schlange, nachdem sie im Array verschoben wurde
-	
+		end      	
 	end # Ende: Methode verschiebe Schlange
 
 #-------------------------------------------------------------------------------------------------------------------------------
@@ -170,7 +163,6 @@ class Schlange <Shoes::Widget
 													# dann kann es sich nur um Snake, Futter oder eine Wand handeln
 			 if(@@spielfeld[kopf_x][kopf_y]==1) then			# CRASH mit Snake
 				rueckgabe = 1							# Wird in verschiebe_schnalge genutzt
-				#@@spielvariable=2						# Beendet das Spiel
 			elsif(@@spielfeld[kopf_x][kopf_y] == 2)				# CRASH mit Futter
 				@fressen_auf_feld=false					# Es kann neues Futter gesetzt werden
 				@@verlaengerung = @@verlaengerung+1		# Gibt an, um wie viele Stellen Schlange verlängert wird	
@@ -180,14 +172,12 @@ class Schlange <Shoes::Widget
 
 			elsif(@@spielfeld[kopf_x][kopf_y]==4)				# CRASH mit Wand
 				rueckgabe = 4							# Wird in verschiebe_schnalge genutzt
-				#@@spielvariable=2						# Beendet das Spiel
 			end
 		
 		else 
 			rueckgabe = 0								# Freies Feld
 			zeichne_schlange()
 		end
-		@test.replace "#{@@spielvariable}"
 		return rueckgabe
 	end
 
@@ -215,11 +205,7 @@ class Schlange <Shoes::Widget
 		@@fressen_grafisch = stack do
 			fill darkorange
 			rect(x_fressen*10+RAND,y_fressen*10+RAND,ZELLE,ZELLE)	# Zeichne Fressen grafisch			
-		end	
-		@bla = stack :displace_left=>x_fressen*10+RAND,:displace_top=> y_fressen*10+RAND do
-			@@image = image"apfel.png" 
-		end
-		
+		end			
 	end
 	
 #------------------------------------------------------------------------------------------------------------------
