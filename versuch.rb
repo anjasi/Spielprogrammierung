@@ -1,7 +1,8 @@
 
 # Konstanten 
 #-------------------------------------------------------------
-	FENSTER = 600 		# Groessee des Fensters
+	FENSTER_HOEHE = 650 		# Groessee des Fensters
+	FENSTER_BREITE = 600 
 	FELD_GROESSE = 500 	# Groesse des Spielfelds
 	ZELLE = 10 		# Groesse des Schlangenkröpers
 	RAND = 50 			# Offset vom Spielfeld
@@ -223,7 +224,7 @@ class Schlange <Shoes::Widget
 	def zeichne_spielfeld()
 		nostroke
 		fill white				
-		rect(RAND+10, RAND+10, FELD_GROESSE-20, FELD_GROESSE-20)	
+		rect(RAND+10, RAND+50, FELD_GROESSE-20, FELD_GROESSE-20)	
 	end	
 
 # Get und Set-Methoden für das Hauptprogramm
@@ -248,8 +249,8 @@ end  # Klassenende
 # Shoes Programm 
 #------------------------------------------------------------------------------------------------------------------
 
-Shoes.app :height => FENSTER, :width => FENSTER, :title=> "Unsere kleine Snake" do 
-Shoes.show_log
+Shoes.app :height => FENSTER_HOEHE, :width => FENSTER_BREITE, :title=> "Unsere kleine Snake" do 
+#hoes.show_log
 	
 	background darkmagenta	
 	alert "Anleitung: Ziel des Spiels ist es, mit deiner Schlange moeglichst viel Futter einzusammeln. Dies gelingt dir, indem du die Schlange mit den Pfeiltasten nach oben, nach unten, nach links oder  nach rechts steuerst. Doch aufgepasst! Mit jedem eingesammelten Futterstueck waechst deine Schlange. Faehrst du in dich selbst oder gegen den Rand hast du leider verloren und das Spiel ist beendet!"
