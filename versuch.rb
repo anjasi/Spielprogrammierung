@@ -19,10 +19,10 @@ class Schlange <Shoes::Widget
 		@fressen_auf_feld = false		# Statusvariable: zeigt an ob bereits Fressen auf Feld liegt
 		@speed = 10				# Spielgeschwindigkeit
 		@fressen = 0				# Für das Fressen-Rect
-		@@schlange_grafisch = nil			# Initialisierung
+		@@schlange_grafisch = nil		# Initialisierung
 		@@fressen_grafisch = nil
-
-
+		
+		
 		@@spielfeld=Array.new(50) {Array.new(50, 0)} 	# Lege ein 2D-Array an mit 50x50 und fülle es mit Nullen (Default-Wert)
 		@@schlange = Array.new(4) {Array.new(2,0)}	# Lege ein 2D-Array für die Schlange an, erweitert sich fynamisch
 		@@verlaengerung = 0						# Gibt an, umwieviel Stellen die Schlange erweitert wird, sinnvoll bei Boni, TODO
@@ -213,9 +213,12 @@ class Schlange <Shoes::Widget
 		end
 		@@fressen_grafisch = stack do
 			fill darkorange
-			rect(x_fressen*10+RAND,y_fressen*10+RAND,ZELLE,ZELLE)	# Zeichne Fressen grafisch	
-		
+			rect(x_fressen*10+RAND,y_fressen*10+RAND,ZELLE,ZELLE)	# Zeichne Fressen grafisch			
 		end	
+		@bla = stack :displace_left=>x_fressen*10+RAND,:displace_top=> y_fressen*10+RAND do
+			@@image = image"apfel.png" 
+		end
+		
 	end
 	
 #------------------------------------------------------------------------------------------------------------------
