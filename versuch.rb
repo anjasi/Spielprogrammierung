@@ -19,6 +19,8 @@ class Schlange <Shoes::Widget
 		@fressen_auf_feld = false		# Statusvariable: zeigt an ob bereits Fressen auf Feld liegt
 		@speed = 10				# Spielgeschwindigkeit
 		@fressen = 0				# Für das Fressen-Rect
+		@@schlange_grafisch = nil			# Initialisierung
+		@@fressen_grafisch = nil
 
 
 		@@spielfeld=Array.new(50) {Array.new(50, 0)} 	# Lege ein 2D-Array an mit 50x50 und fülle es mit Nullen (Default-Wert)
@@ -53,6 +55,7 @@ class Schlange <Shoes::Widget
 			@@schlange[3][1]=25;		# Y - Letztes Feld der Schlange	
 			zeichne_spielfeld()		# Rufe auf, zeichne Spielfeld
 			zeichne_schlange()		# Setzt die erste Schlange, noch keine Bewegung
+			setze_fressen()			# Setzt das erste Fressen
 	end
 
 
@@ -60,15 +63,21 @@ class Schlange <Shoes::Widget
 #--------------------------------------------------------------------------------------------------------------------------------------------------------
 
 	def zeichne_schlange()				# Zeichnet die Schlange grafisch
-		@@anzahl_felder.times do |i|		# Für alle Feld der Schlange, nutze den Iterator "i"
-			stroke white				# Rand ist weiß
-			if i==0 then 				# Schlangenkopf
-				fill black				# fülle Schwarz
-			else						# Schlangenkörper
-				fill forestgreen			# fülle grün		
+		if @@schlange_grafisch!=nil then
+			@@schlange_grafisch.clear
+		end
+		@@schlange_grafisch = stack do
+			@@anzahl_felder.times do |i|		# Für alle Feld der Schlange, nutze den Iterator "i"
+				stroke white				# Rand ist weiß
+				if i==0 then 				# Schlangenkopf
+					fill black				# fülle Schwarz
+				else						# Schlangenkörper
+					fill forestgreen			# fülle grün		
+				end
+				
+				rect(@@schlange[i][0]*10+RAND,@@schlange[i][1]*10+RAND,ZELLE,ZELLE)			
+				# Zeichnet die Schlange grafisch
 			end
-			@schlange = rect(@@schlange[i][0]*10+RAND,@@schlange[i][1]*10+RAND,ZELLE,ZELLE)
-			# Zeichnet die Schlange grafisch
 		end
 	end
 
@@ -104,7 +113,7 @@ class Schlange <Shoes::Widget
 		if @@verlaengerung==0 then				# Wenn Verlängerung der Schlange null ist										
 			nostroke							# kein Rand
 			fill white 							# fülle weiß			
-			@schlange = rect(@@schlange[-1][0]*10+RAND,@@schlange[-1][1]*10+RAND,ZELLE,ZELLE)	# Lösche grafisch
+			#@schlange = rect(@@schlange[-1][0]*10+RAND,@@schlange[-1][1]*10+RAND,ZELLE,ZELLE)	# Lösche grafisch
 
 			@@spielfeld[@@schlange[-1][0]][@@schlange[-1][1]]=0	
 			# Löscht letztes Feld im Array		
@@ -149,7 +158,7 @@ class Schlange <Shoes::Widget
 		end      
 		
 		#----------- ZEICHNE SCHLANGE --------------------------------------------------------------------------
-		zeichne_schlange()								# Zeichne die Schlange, nachdem sie im Array verschoben wurde
+		#zeichne_schlange()								# Zeichne die Schlange, nachdem sie im Array verschoben wurde
 	
 	end # Ende: Methode verschiebe Schlange
 
@@ -160,20 +169,24 @@ class Schlange <Shoes::Widget
 													# dann kann es sich nur um Snake, Futter oder eine Wand handeln
 			 if(@@spielfeld[kopf_x][kopf_y]==1) then			# CRASH mit Snake
 				rueckgabe = 1							# Wird in verschiebe_schnalge genutzt
-				@@spielvariable=2						# Beendet das Spiel
+				#@@spielvariable=2						# Beendet das Spiel
 			elsif(@@spielfeld[kopf_x][kopf_y] == 2)				# CRASH mit Futter
 				@fressen_auf_feld=false					# Es kann neues Futter gesetzt werden
 				@@verlaengerung = @@verlaengerung+1		# Gibt an, um wie viele Stellen Schlange verlängert wird	
 				@@punkte = @@punkte+1					# Erhöhe Punktzahl
-				rueckgabe = 2							# Wird in verschiebe_schnalge genutzt		
+				rueckgabe = 2							# Wird in verschiebe_schnalge genutzt
+				setze_fressen()							# Setzt neues Fressen
 
-			else(@@spielfeld[kopf_x][kopf_y]==4)				# CRASH mit Wand
+			elsif(@@spielfeld[kopf_x][kopf_y]==4)				# CRASH mit Wand
 				rueckgabe = 4							# Wird in verschiebe_schnalge genutzt
-				@@spielvariable=2						# Beendet das Spiel
+				#@@spielvariable=2						# Beendet das Spiel
 			end
 		
-		else rueckgabe = 0								# Freies Feld
+		else 
+			rueckgabe = 0								# Freies Feld
+			zeichne_schlange()
 		end
+		@test.replace "#{@@spielvariable}"
 		return rueckgabe
 	end
 
@@ -181,19 +194,29 @@ class Schlange <Shoes::Widget
 
 	def setze_fressen()				# Setzt das Fressen zufällig im Spielfeld, überprüft ob das neue Fressen nicht schon belegt ist
 		x_fressen = 0				# Für Random
-		y_fressen = 0				# Für Random
-		fill darkorange
+		y_fressen = 0				# Für Random		
 		if (@fressen_auf_feld == false) then				# Wenn schon Fressen auf dem Feld liegt, dann darf kein neues erscheinen			
 			begin								# Fussgesteurte Schleige
-				x_fressen = rand (49)					# Random, X-Futter
-				y_fressen = rand (49)					# Random, Y-Futter			
+				x_fressen = rand (40)					# Random, X-Futter
+				y_fressen = rand (40)					# Random, Y-Futter			
 			end while check_crash(x_fressen, y_fressen) !=0	# Ist die Koordinate schon belegt? Wenn ja, springe hoch!			
-			
-			@fressen = rect(x_fressen*10+RAND,y_fressen*10+RAND,ZELLE,ZELLE)	# Zeichne Fressen grafisch			
+			zeichne_fressen(x_fressen,y_fressen)		
 			@@spielfeld[x_fressen][y_fressen]=2							# Setze im Spielfeld-Array das Essen			
 			@fressen_auf_feld=true									# Setze Statusvariable
+			
 		end
-	end	
+	end
+
+	def zeichne_fressen(x_fressen,y_fressen)
+		if @@fressen_grafisch !=nil then
+			@@fressen_grafisch.clear
+		end
+		@@fressen_grafisch = stack do
+			fill darkorange
+			rect(x_fressen*10+RAND,y_fressen*10+RAND,ZELLE,ZELLE)	# Zeichne Fressen grafisch	
+		
+		end	
+	end
 	
 #------------------------------------------------------------------------------------------------------------------
 
@@ -226,7 +249,7 @@ end  # Klassenende
 #------------------------------------------------------------------------------------------------------------------
 
 Shoes.app :height => FENSTER, :width => FENSTER, :title=> "Unsere kleine Snake" do 
-#Shoes.show_log
+Shoes.show_log
 	
 	background darkmagenta	
 	alert "Anleitung: Ziel des Spiels ist es, mit deiner Schlange moeglichst viel Futter einzusammeln. Dies gelingt dir, indem du die Schlange mit den Pfeiltasten nach oben, nach unten, nach links oder  nach rechts steuerst. Doch aufgepasst! Mit jedem eingesammelten Futterstueck waechst deine Schlange. Faehrst du in dich selbst oder gegen den Rand hast du leider verloren und das Spiel ist beendet!"
@@ -240,7 +263,7 @@ Shoes.app :height => FENSTER, :width => FENSTER, :title=> "Unsere kleine Snake" 
 	animation=animate(SPEED) do 			# Dauerschleife die immer die Schlange zeichnet
 		 if schlange.get_spielvariable==1 then	# Wenn das Spiel läuft
 			schlange.verschiebe_schlange() 	# Zeichnet die Schlange nicht, sondern löscht (grafisch) und im array und verschiebt im Array
-			schlange.setze_fressen()		# Ruft durchgehend setze_fressen auf und überprüft ob er neues Fressen setzten darf
+			
 			schlange.get_punkte			# Zeigt durchgehend die Puntke an
 		 elsif schlange.get_spielvariable==2	# TOT
 			animation.stop				# Stoppe die Anmation
